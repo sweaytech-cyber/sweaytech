@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SweayTech - Premium Web Design & Development</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>SweayTech</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2 class="hero-subtitle">Welcome to</h2>
+            <h1 class="hero-title">Premium Web Design</h1>
+            <p class="hero-description">
+                We craft beautiful, high-performance websites that elevate your brand and drive real results. 
+                Luxury design meets cutting-edge development.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })">
+                    Get a Website
+                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('services').scrollIntoView({ behavior: 'smooth' })">
+                    View Our Work
+                </button>
+            </div>
+        </div>
+        <div class="hero-gradient"></div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <p class="section-subtitle">Comprehensive solutions tailored to your vision</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">✨</div>
+                    <h3>Website Design</h3>
+                    <p>Bespoke design that captures your brand essence with modern aesthetics and intuitive user experiences.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3>Web Development</h3>
+                    <p>Robust, scalable websites built with modern technologies ensuring performance, security, and reliability.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">💼</div>
+                    <h3>Business Websites</h3>
+                    <p>Professional online presence for established companies. Showcase your expertise and convert visitors into clients.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3>Landing Pages</h3>
+                    <p>High-converting landing pages designed to capture leads and drive specific actions with strategic messaging.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔄</div>
+                    <h3>Website Redesigns</h3>
+                    <p>Modernize your existing site with fresh design, improved functionality, and enhanced user engagement.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <h3>Brand Strategy</h3>
+                    <p>Strategic guidance to define your online presence, voice, and visual identity that resonates with your audience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title">About SweayTech</h2>
+                <div class="about-text">
+                    <p>
+                        At SweayTech, we believe that a website is more than just a digital presence—it's a reflection of your brand's 
+                        values and potential. We specialize in creating premium digital experiences that combine stunning aesthetics 
+                        with powerful functionality.
+                    </p>
+                    <p>
+                        Our approach is rooted in three core principles: <strong>Quality</strong> in every detail, <strong>Performance</strong> 
+                        that matters, and <strong>Clean Design</strong> that stands the test of time. We work closely with our clients 
+                        to understand their vision and translate it into websites that drive real business results.
+                    </p>
+                    <p>
+                        From concept to launch and beyond, we're committed to excellence. Each project receives the attention, expertise, 
+                        and creativity it deserves. We don't just build websites—we build digital assets that elevate your brand.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Let's Work Together</h2>
+            <p class="section-subtitle">Ready to transform your online presence?</p>
+            
+            <div class="contact-content">
+                <div class="contact-methods">
+                    <div class="contact-card">
+                        <h3>Email</h3>
+                        <a href="mailto:sweaytech@gmail.com" class="contact-link">sweaytech@gmail.com</a>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h3>Phone</h3>
+                        <a href="tel:+14147121555" class="contact-link">414-712-1555</a>
+                    </div>
+                </div>
+                
+                <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <input type="text" placeholder="Your Name" name="name" required>
+                    <input type="email" placeholder="Your Email" name="email" required>
+                    <textarea placeholder="Tell us about your project..." name="message" rows="5" required></textarea>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SweayTech. All rights reserved.</p>
+            <p>Crafted with precision and passion.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
