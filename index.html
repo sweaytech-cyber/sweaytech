@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SweayTech - Premium Web Design & Development</title>
+    <title>SweayTech - Premium Web Design & Development Studio</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -13,42 +13,131 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <h1>SweayTech</h1>
+                <span class="logo-accent"></span>
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#why-us" class="nav-link">Why Us</a></li>
+                <li><a href="#contact" class="nav-link contact-link-nav">Start a Project</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-gradient-blur"></div>
+            <div class="animated-elements">
+                <span class="element element-1"></span>
+                <span class="element element-2"></span>
+                <span class="element element-3"></span>
+            </div>
+        </div>
         <div class="hero-content">
-            <h2 class="hero-subtitle">Welcome to</h2>
-            <h1 class="hero-title">Premium Web Design</h1>
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Award-winning Web Design Studio
+            </div>
+            <h1 class="hero-title">
+                Your Brand <span class="gradient-text">Deserves Better</span>
+            </h1>
             <p class="hero-description">
-                We craft beautiful, high-performance websites that elevate your brand and drive real results. 
-                Luxury design meets cutting-edge development.
+                We design and develop premium websites that don't just look beautiful—they convert visitors into paying customers. 
+                Trusted by ambitious brands.
             </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">200+</span>
+                    <span class="stat-label">Websites Built</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Client Satisfaction</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">$50M+</span>
+                    <span class="stat-label">Revenue Generated</span>
+                </div>
+            </div>
             <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })">
-                    Get a Website
+                <button class="btn btn-primary btn-large" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })">
+                    <span>Get Your Website</span>
+                    <span class="btn-arrow">→</span>
                 </button>
-                <button class="btn btn-secondary" onclick="document.getElementById('services').scrollIntoView({ behavior: 'smooth' })">
-                    View Our Work
+                <button class="btn btn-secondary btn-large" onclick="document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' })">
+                    <span>View Our Work</span>
                 </button>
             </div>
         </div>
-        <div class="hero-gradient"></div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">Featured Work</h2>
+            <p class="section-subtitle">Premium websites that drive results</p>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-item featured">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image luxury-brand"></div>
+                        <div class="portfolio-content">
+                            <h3>Luxury Fashion Brand</h3>
+                            <p>Premium e-commerce platform with custom animations</p>
+                            <div class="portfolio-stats">
+                                <span>180K visitors/month</span>
+                                <span>+320% conversion uplift</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image tech-startup"></div>
+                        <div class="portfolio-content">
+                            <h3>Tech Startup SaaS</h3>
+                            <p>Conversion-optimized landing page</p>
+                            <div class="portfolio-stats">
+                                <span>45% signup rate</span>
+                                <span>$2.3M ARR captured</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-card">
+                        <div class="portfolio-image creative-agency"></div>
+                        <div class="portfolio-content">
+                            <h3>Creative Agency</h3>
+                            <p>Interactive portfolio showcase</p>
+                            <div class="portfolio-stats">
+                                <span>500+ leads generated</span>
+                                <span>Doubled client inquiries</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portfolio-cta">
+                <h3>See how we transformed these businesses</h3>
+                <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })">
+                    <span>Get a Custom Quote</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </div>
     </section>
 
     <!-- Services Section -->
     <section id="services" class="services">
         <div class="container">
-            <h2 class="section-title">Our Services</h2>
-            <p class="section-subtitle">Comprehensive solutions tailored to your vision</p>
+            <h2 class="section-title">What We Deliver</h2>
+            <p class="section-subtitle">End-to-end solutions that drive growth</p>
             
             <div class="services-grid">
                 <div class="service-card">
@@ -90,26 +179,32 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
+    <!-- Why Choose Us Section -->
+    <section id="why-us" class="about">
         <div class="container">
             <div class="about-content">
-                <h2 class="section-title">About SweayTech</h2>
-                <div class="about-text">
-                    <p>
-                        At SweayTech, we believe that a website is more than just a digital presence—it's a reflection of your brand's 
-                        values and potential. We specialize in creating premium digital experiences that combine stunning aesthetics 
-                        with powerful functionality.
-                    </p>
-                    <p>
-                        Our approach is rooted in three core principles: <strong>Quality</strong> in every detail, <strong>Performance</strong> 
-                        that matters, and <strong>Clean Design</strong> that stands the test of time. We work closely with our clients 
-                        to understand their vision and translate it into websites that drive real business results.
-                    </p>
-                    <p>
-                        From concept to launch and beyond, we're committed to excellence. Each project receives the attention, expertise, 
-                        and creativity it deserves. We don't just build websites—we build digital assets that elevate your brand.
-                    </p>
+                <h2 class="section-title">Why Choose SweayTech</h2>
+                <div class="about-grid">
+                    <div class="about-item">
+                        <div class="about-number">01</div>
+                        <h3>Results-Driven</h3>
+                        <p>We don't believe in vanity metrics. Every website is optimized for conversions and measurable business growth.</p>
+                    </div>
+                    <div class="about-item">
+                        <div class="about-number">02</div>
+                        <h3>Design Excellence</h3>
+                        <p>Award-winning designs that combine stunning aesthetics with intuitive user experience and modern best practices.</p>
+                    </div>
+                    <div class="about-item">
+                        <div class="about-number">03</div>
+                        <h3>Technical Expertise</h3>
+                        <p>Built with cutting-edge technologies. Lightning-fast, secure, and scalable—ready for your growth.</p>
+                    </div>
+                    <div class="about-item">
+                        <div class="about-number">04</div>
+                        <h3>Full Partnership</h3>
+                        <p>From initial strategy through launch and beyond. We're invested in your success and provide ongoing support.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,27 +213,83 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Let's Work Together</h2>
-            <p class="section-subtitle">Ready to transform your online presence?</p>
+            <div class="contact-header">
+                <h2 class="section-title">Ready to Transform Your Online Presence?</h2>
+                <p class="section-subtitle">Let's discuss your project and create something extraordinary</p>
+            </div>
             
             <div class="contact-content">
-                <div class="contact-methods">
-                    <div class="contact-card">
-                        <h3>Email</h3>
-                        <a href="mailto:sweaytech@gmail.com" class="contact-link">sweaytech@gmail.com</a>
+                <div class="contact-info">
+                    <div class="contact-card premium">
+                        <h3>Get in Touch</h3>
+                        <p>Quick response times. Direct communication with our team.</p>
+                        
+                        <div class="contact-method">
+                            <h4>📧 Email</h4>
+                            <a href="mailto:sweaytech@gmail.com" class="contact-link">sweaytech@gmail.com</a>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <h4>📱 Phone</h4>
+                            <a href="tel:+14147121555" class="contact-link">414-712-1555</a>
+                        </div>
+
+                        <div class="contact-method">
+                            <h4>⏱️ Response Time</h4>
+                            <p class="response-time">Within 24 hours</p>
+                        </div>
                     </div>
                     
-                    <div class="contact-card">
-                        <h3>Phone</h3>
-                        <a href="tel:+14147121555" class="contact-link">414-712-1555</a>
+                    <div class="contact-card featured-card">
+                        <div class="badge-special">✨ Free Consultation</div>
+                        <h3>Schedule a Call</h3>
+                        <p>Let's talk about your website and how we can help your business grow.</p>
+                        <button class="btn btn-primary" onclick="alert('Consultation booking coming soon!')">
+                            <span>Book 30-Minute Call</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
                     </div>
                 </div>
                 
                 <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                    <input type="text" placeholder="Your Name" name="name" required>
-                    <input type="email" placeholder="Your Email" name="email" required>
-                    <textarea placeholder="Tell us about your project..." name="message" rows="5" required></textarea>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" placeholder="John Smith" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" placeholder="john@company.com" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Type *</label>
+                        <select name="business_type" required>
+                            <option value="">Select your industry</option>
+                            <option value="ecommerce">E-Commerce</option>
+                            <option value="saas">SaaS/Tech</option>
+                            <option value="agency">Agency/Creative</option>
+                            <option value="consulting">Consulting</option>
+                            <option value="elearning">E-Learning</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Project Budget *</label>
+                        <select name="budget" required>
+                            <option value="">Select range</option>
+                            <option value="5-10k">$5,000 - $10,000</option>
+                            <option value="10-25k">$10,000 - $25,000</option>
+                            <option value="25-50k">$25,000 - $50,000</option>
+                            <option value="50k+">$50,000+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tell Us About Your Project *</label>
+                        <textarea placeholder="What's your vision? What problems are we solving?" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span>Send Project Inquiry</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
                 </form>
             </div>
         </div>
