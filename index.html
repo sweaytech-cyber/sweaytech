@@ -1,1743 +1,918 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>SweayTech — Digital Craftsmanship</title>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-   <style>
-       :root {
-           --bg-primary: #0a0f0a;
-           --bg-secondary: #0d120d;
-           --bg-card: #111811;
-           --bg-tertiary: #0f140f;
-           --accent: #22c55e;
-           --accent-light: #4ade80;
-           --accent-dark: #16a34a;
-           --accent-glow: rgba(34, 197, 94, 0.4);
-           --accent-glow-strong: rgba(34, 197, 94, 0.6);
-           --text-primary: #ffffff;
-           --text-secondary: #a3a3a3;
-           --text-muted: #737373;
-           --border: #1a221a;
-           --border-light: #223022;
-           --gradient-1: #22c55e;
-           --gradient-2: #4ade80;
-           --gradient-3: #16a34a;
-       }
-
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
-
-       html {
-           scroll-behavior: smooth;
-       }
-
-       body {
-           font-family: 'Inter', sans-serif;
-           background-color: var(--bg-primary);
-           color: var(--text-primary);
-           line-height: 1.6;
-           overflow-x: hidden;
-           cursor: none;
-       }
-
-       /* Custom Cursor */
-       .cursor {
-           width: 20px;
-           height: 20px;
-           border: 2px solid var(--accent);
-           border-radius: 50%;
-           position: fixed;
-           pointer-events: none;
-           z-index: 9999;
-           transition: transform 0.1s ease;
-           mix-blend-mode: difference;
-       }
-
-       .cursor-follower {
-           width: 40px;
-           height: 40px;
-           background: var(--accent-glow);
-           border-radius: 50%;
-           position: fixed;
-           pointer-events: none;
-           z-index: 9998;
-           transition: transform 0.3s ease;
-           filter: blur(10px);
-       }
-
-       .cursor.hover {
-           transform: scale(2);
-           background: var(--accent);
-           border-color: transparent;
-       }
-
-       h1, h2, h3, h4 {
-           font-family: 'Space Grotesk', sans-serif;
-           font-weight: 600;
-           letter-spacing: -0.02em;
-       }
-
-       /* Noise Overlay */
-       .noise {
-           position: fixed;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           pointer-events: none;
-           z-index: 9999;
-           opacity: 0.04;
-           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-       }
-
-       /* Navigation */
-       .navbar {
-           position: fixed;
-           top: 0;
-           width: 100%;
-           z-index: 1000;
-           padding: 1.5rem 0;
-           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-           background: transparent;
-       }
-
-       .navbar.scrolled {
-           background: rgba(10, 15, 10, 0.85);
-           backdrop-filter: blur(20px);
-           padding: 1rem 0;
-           border-bottom: 1px solid var(--border);
-       }
-
-       .nav-container {
-           max-width: 1400px;
-           margin: 0 auto;
-           padding: 0 2rem;
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-       }
-
-       .nav-logo {
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 1.75rem;
-           font-weight: 700;
-           color: var(--text-primary);
-           text-decoration: none;
-           position: relative;
-           overflow: hidden;
-       }
-
-       .nav-logo span {
-           color: var(--accent);
-           display: inline-block;
-           animation: logoPulse 3s ease-in-out infinite;
-       }
-
-       @keyframes logoPulse {
-           0%, 100% { text-shadow: 0 0 20px var(--accent-glow); }
-           50% { text-shadow: 0 0 40px var(--accent-glow-strong); }
-       }
-
-       .nav-menu {
-           display: flex;
-           list-style: none;
-           gap: 3rem;
-           align-items: center;
-       }
-
-       .nav-link {
-           color: var(--text-secondary);
-           text-decoration: none;
-           font-size: 0.9rem;
-           font-weight: 500;
-           transition: all 0.3s ease;
-           position: relative;
-           padding: 0.5rem 0;
-       }
-
-       .nav-link::before {
-           content: '';
-           position: absolute;
-           bottom: 0;
-           left: 0;
-           width: 0;
-           height: 2px;
-           background: var(--accent);
-           transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-       }
-
-       .nav-link:hover {
-           color: var(--accent);
-       }
-
-       .nav-link:hover::before {
-           width: 100%;
-       }
-
-       .nav-cta {
-           background: linear-gradient(135deg, var(--accent), var(--accent-light));
-           color: var(--bg-primary);
-           padding: 0.875rem 1.75rem;
-           border-radius: 50px;
-           text-decoration: none;
-           font-weight: 700;
-           font-size: 0.9rem;
-           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-           box-shadow: 0 4px 20px var(--accent-glow);
-           position: relative;
-           overflow: hidden;
-       }
-
-       .nav-cta::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: -100%;
-           width: 100%;
-           height: 100%;
-           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-           transition: left 0.5s ease;
-       }
-
-       .nav-cta:hover {
-           transform: translateY(-2px);
-           box-shadow: 0 8px 30px var(--accent-glow-strong);
-       }
-
-       .nav-cta:hover::before {
-           left: 100%;
-       }
-
-       /* Hero Section with WebGL Canvas */
-       .hero {
-           min-height: 100vh;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           position: relative;
-           padding: 8rem 2rem 4rem;
-           overflow: hidden;
-       }
-
-       #hero-canvas {
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           z-index: 0;
-       }
-
-       .hero-content {
-           max-width: 1200px;
-           text-align: center;
-           position: relative;
-           z-index: 1;
-           perspective: 1000px;
-       }
-
-       .hero-badge {
-           display: inline-flex;
-           align-items: center;
-           gap: 0.75rem;
-           padding: 0.75rem 1.5rem;
-           background: rgba(34, 197, 94, 0.1);
-           border: 1px solid var(--border-light);
-           border-radius: 50px;
-           font-size: 0.9rem;
-           color: var(--accent);
-           margin-bottom: 2rem;
-           opacity: 0;
-           transform: translateY(30px);
-       }
-
-       .badge-dot {
-           width: 8px;
-           height: 8px;
-           background: var(--accent);
-           border-radius: 50%;
-           animation: pulse 2s infinite;
-           box-shadow: 0 0 10px var(--accent);
-       }
-
-       @keyframes pulse {
-           0%, 100% { opacity: 1; transform: scale(1); }
-           50% { opacity: 0.5; transform: scale(1.2); }
-       }
-
-       .hero-title {
-           font-size: clamp(3.5rem, 10vw, 8rem);
-           line-height: 0.95;
-           margin-bottom: 1.5rem;
-           font-weight: 700;
-           opacity: 0;
-           transform: translateY(50px) rotateX(20deg);
-       }
-
-       .hero-title .line {
-           display: block;
-           overflow: hidden;
-       }
-
-       .hero-title .line-inner {
-           display: block;
-           transform: translateY(100%);
-       }
-
-       .gradient-text {
-           background: linear-gradient(135deg, var(--accent), var(--accent-light), var(--accent));
-           -webkit-background-clip: text;
-           -webkit-text-fill-color: transparent;
-           background-clip: text;
-           background-size: 200% 200%;
-           animation: gradient 5s ease infinite;
-       }
-
-       @keyframes gradient {
-           0%, 100% { background-position: 0% 50%; }
-           50% { background-position: 100% 50%; }
-       }
-
-       .hero-description {
-           font-size: 1.35rem;
-           color: var(--text-secondary);
-           max-width: 650px;
-           margin: 0 auto 3rem;
-           line-height: 1.7;
-           opacity: 0;
-           transform: translateY(30px);
-       }
-
-       .hero-stats {
-           display: flex;
-           justify-content: center;
-           gap: 5rem;
-           margin-bottom: 3rem;
-           opacity: 0;
-           transform: translateY(30px);
-       }
-
-       .stat {
-           text-align: center;
-           position: relative;
-       }
-
-       .stat::after {
-           content: '';
-           position: absolute;
-           right: -2.5rem;
-           top: 50%;
-           transform: translateY(-50%);
-           width: 1px;
-           height: 40px;
-           background: var(--border);
-       }
-
-       .stat:last-child::after {
-           display: none;
-       }
-
-       .stat-number {
-           display: block;
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 3rem;
-           font-weight: 700;
-           color: var(--accent);
-           line-height: 1;
-           margin-bottom: 0.5rem;
-           text-shadow: 0 0 30px var(--accent-glow);
-       }
-
-       .stat-label {
-           font-size: 0.85rem;
-           color: var(--text-muted);
-           text-transform: uppercase;
-           letter-spacing: 0.15em;
-       }
-
-       .hero-buttons {
-           display: flex;
-           gap: 1.5rem;
-           justify-content: center;
-           flex-wrap: wrap;
-           opacity: 0;
-           transform: translateY(30px);
-       }
-
-       .btn {
-           padding: 1.25rem 2.5rem;
-           border-radius: 50px;
-           font-weight: 600;
-           text-decoration: none;
-           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-           display: inline-flex;
-           align-items: center;
-           gap: 0.75rem;
-           cursor: none;
-           border: none;
-           font-size: 1rem;
-           position: relative;
-           overflow: hidden;
-       }
-
-       .btn-primary {
-           background: linear-gradient(135deg, var(--accent), var(--accent-light));
-           color: var(--bg-primary);
-           box-shadow: 0 4px 30px var(--accent-glow);
-       }
-
-       .btn-primary::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: -100%;
-           width: 100%;
-           height: 100%;
-           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-           transition: left 0.6s ease;
-       }
-
-       .btn-primary:hover {
-           transform: translateY(-3px) scale(1.02);
-           box-shadow: 0 8px 40px var(--accent-glow-strong);
-       }
-
-       .btn-primary:hover::before {
-           left: 100%;
-       }
-
-       .btn-secondary {
-           background: transparent;
-           color: var(--text-primary);
-           border: 2px solid var(--border-light);
-       }
-
-       .btn-secondary:hover {
-           background: var(--bg-card);
-           border-color: var(--accent);
-           transform: translateY(-3px);
-           box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-       }
-
-       .btn-arrow {
-           transition: transform 0.3s ease;
-       }
-
-       .btn:hover .btn-arrow {
-           transform: translateX(5px);
-       }
-
-       /* Section Styles */
-       section {
-           padding: 10rem 2rem;
-           position: relative;
-       }
-
-       .container {
-           max-width: 1400px;
-           margin: 0 auto;
-       }
-
-       .section-header {
-           text-align: center;
-           margin-bottom: 6rem;
-       }
-
-       .section-label {
-           display: inline-block;
-           padding: 0.75rem 1.5rem;
-           background: rgba(34, 197, 94, 0.1);
-           border: 1px solid var(--border-light);
-           border-radius: 50px;
-           font-size: 0.85rem;
-           color: var(--accent);
-           text-transform: uppercase;
-           letter-spacing: 0.15em;
-           margin-bottom: 1.5rem;
-           font-weight: 600;
-       }
-
-       .section-title {
-           font-size: clamp(3rem, 6vw, 5rem);
-           margin-bottom: 1.5rem;
-           line-height: 1.1;
-       }
-
-       .section-subtitle {
-           color: var(--text-secondary);
-           font-size: 1.3rem;
-           max-width: 600px;
-           margin: 0 auto;
-       }
-
-       /* Portfolio Section */
-       .portfolio {
-           background: var(--bg-secondary);
-           position: relative;
-       }
-
-       .portfolio::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: 0;
-           right: 0;
-           height: 1px;
-           background: linear-gradient(90deg, transparent, var(--accent), transparent);
-           opacity: 0.3;
-       }
-
-       .portfolio-grid {
-           display: grid;
-           grid-template-columns: repeat(3, 1fr);
-           gap: 2rem;
-       }
-
-       .portfolio-card {
-           background: var(--bg-card);
-           border: 1px solid var(--border);
-           border-radius: 24px;
-           overflow: hidden;
-           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-           position: relative;
-           cursor: none;
-           transform-style: preserve-3d;
-       }
-
-       .portfolio-card:nth-child(1) {
-           grid-column: span 2;
-           grid-row: span 2;
-       }
-
-       .portfolio-card:hover {
-           transform: translateY(-10px) scale(1.02);
-           border-color: var(--accent);
-           box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--accent-glow);
-       }
-
-       .portfolio-card::before {
-           content: '';
-           position: absolute;
-           inset: 0;
-           background: linear-gradient(135deg, transparent 0%, rgba(34, 197, 94, 0.1) 100%);
-           opacity: 0;
-           transition: opacity 0.3s ease;
-           z-index: 1;
-       }
-
-       .portfolio-card:hover::before {
-           opacity: 1;
-       }
-
-       .portfolio-image {
-           height: 100%;
-           min-height: 300px;
-           background: linear-gradient(135deg, #0f1f0f 0%, #1a2e1a 100%);
-           position: relative;
-           overflow: hidden;
-       }
-
-       .portfolio-card:nth-child(1) .portfolio-image {
-           min-height: 600px;
-       }
-
-       .portfolio-image::after {
-           content: '';
-           position: absolute;
-           inset: 0;
-           background: linear-gradient(to bottom, transparent 0%, var(--bg-card) 100%);
-       }
-
-       .portfolio-content {
-           padding: 2.5rem;
-           position: relative;
-           z-index: 2;
-       }
-
-       .portfolio-content h3 {
-           font-size: 1.75rem;
-           margin-bottom: 0.75rem;
-           transition: color 0.3s ease;
-       }
-
-       .portfolio-card:hover .portfolio-content h3 {
-           color: var(--accent);
-       }
-
-       .portfolio-content p {
-           color: var(--text-secondary);
-           margin-bottom: 1.5rem;
-           font-size: 1.05rem;
-       }
-
-       .portfolio-meta {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           padding-top: 1.5rem;
-           border-top: 1px solid var(--border);
-       }
-
-       .portfolio-stats {
-           display: flex;
-           gap: 1.5rem;
-           font-size: 0.9rem;
-           color: var(--text-muted);
-       }
-
-       .portfolio-stats span {
-           position: relative;
-           padding-left: 1rem;
-       }
-
-       .portfolio-stats span::before {
-           content: '↑';
-           position: absolute;
-           left: 0;
-           color: var(--accent);
-       }
-
-       .portfolio-price {
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 1.5rem;
-           font-weight: 700;
-           color: var(--accent);
-       }
-
-       /* Services Section */
-       .services-grid {
-           display: grid;
-           grid-template-columns: repeat(3, 1fr);
-           gap: 2rem;
-       }
-
-       .service-card {
-           background: var(--bg-card);
-           border: 1px solid var(--border);
-           border-radius: 24px;
-           padding: 3rem;
-           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-           position: relative;
-           overflow: hidden;
-           cursor: none;
-       }
-
-       .service-card::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 4px;
-           background: linear-gradient(90deg, var(--accent), var(--accent-light));
-           transform: scaleX(0);
-           transform-origin: left;
-           transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-       }
-
-       .service-card::after {
-           content: '';
-           position: absolute;
-           inset: 0;
-           background: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.1), transparent 70%);
-           opacity: 0;
-           transition: opacity 0.3s ease;
-       }
-
-       .service-card:hover {
-           transform: translateY(-8px);
-           border-color: var(--accent);
-           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-       }
-
-       .service-card:hover::before {
-           transform: scaleX(1);
-       }
-
-       .service-card:hover::after {
-           opacity: 1;
-       }
-
-       .service-icon {
-           font-size: 3rem;
-           margin-bottom: 2rem;
-           display: inline-block;
-           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-           filter: grayscale(100%);
-           opacity: 0.7;
-       }
-
-       .service-card:hover .service-icon {
-           transform: scale(1.2) rotate(5deg);
-           filter: grayscale(0%);
-           opacity: 1;
-       }
-
-       .service-card h3 {
-           font-size: 1.75rem;
-           margin-bottom: 1rem;
-           position: relative;
-           z-index: 1;
-       }
-
-       .service-card p {
-           color: var(--text-secondary);
-           margin-bottom: 2rem;
-           line-height: 1.8;
-           font-size: 1.05rem;
-           position: relative;
-           z-index: 1;
-       }
-
-       .service-price {
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 1.75rem;
-           font-weight: 700;
-           color: var(--accent);
-           position: relative;
-           z-index: 1;
-       }
-
-       .service-price span {
-           font-size: 0.9rem;
-           color: var(--text-muted);
-           font-weight: 400;
-       }
-
-       /* Why Us Section */
-       .why-us {
-           background: var(--bg-secondary);
-           position: relative;
-       }
-
-       .why-grid {
-           display: grid;
-           grid-template-columns: repeat(2, 1fr);
-           gap: 4rem;
-       }
-
-       .why-item {
-           display: flex;
-           gap: 2rem;
-           align-items: flex-start;
-           padding: 2rem;
-           background: var(--bg-card);
-           border: 1px solid var(--border);
-           border-radius: 20px;
-           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-           cursor: none;
-       }
-
-       .why-item:hover {
-           transform: translateX(10px);
-           border-color: var(--accent);
-           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-       }
-
-       .why-number {
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 4rem;
-           font-weight: 700;
-           color: var(--accent);
-           opacity: 0.2;
-           line-height: 1;
-           flex-shrink: 0;
-           transition: all 0.3s ease;
-       }
-
-       .why-item:hover .why-number {
-           opacity: 1;
-           text-shadow: 0 0 30px var(--accent-glow);
-       }
-
-       .why-content h3 {
-           font-size: 1.75rem;
-           margin-bottom: 1rem;
-           transition: color 0.3s ease;
-       }
-
-       .why-item:hover .why-content h3 {
-           color: var(--accent);
-       }
-
-       .why-content p {
-           color: var(--text-secondary);
-           line-height: 1.8;
-           font-size: 1.05rem;
-       }
-
-       /* Contact Section */
-       .contact-wrapper {
-           display: grid;
-           grid-template-columns: 1fr 1.2fr;
-           gap: 5rem;
-           align-items: start;
-       }
-
-       .contact-info h3 {
-           font-size: 2.5rem;
-           margin-bottom: 1.5rem;
-           line-height: 1.2;
-       }
-
-       .contact-info > p {
-           color: var(--text-secondary);
-           margin-bottom: 3rem;
-           font-size: 1.2rem;
-           line-height: 1.7;
-       }
-
-       .contact-methods {
-           display: flex;
-           flex-direction: column;
-           gap: 1.5rem;
-           margin-bottom: 3rem;
-       }
-
-       .contact-method {
-           display: flex;
-           align-items: center;
-           gap: 1.5rem;
-           padding: 1.25rem;
-           background: var(--bg-card);
-           border: 1px solid var(--border);
-           border-radius: 16px;
-           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-           cursor: none;
-           text-decoration: none;
-           color: inherit;
-       }
-
-       .contact-method:hover {
-           transform: translateX(10px);
-           border-color: var(--accent);
-           background: var(--bg-tertiary);
-       }
-
-       .contact-icon {
-           width: 50px;
-           height: 50px;
-           background: linear-gradient(135deg, var(--accent), var(--accent-light));
-           border-radius: 12px;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           font-size: 1.5rem;
-           flex-shrink: 0;
-           transition: transform 0.3s ease;
-       }
-
-       .contact-method:hover .contact-icon {
-           transform: scale(1.1) rotate(5deg);
-       }
-
-       .contact-details h4 {
-           font-size: 0.9rem;
-           color: var(--text-muted);
-           margin-bottom: 0.25rem;
-           text-transform: uppercase;
-           letter-spacing: 0.1em;
-       }
-
-       .contact-details span {
-           color: var(--text-primary);
-           font-weight: 600;
-           font-size: 1.1rem;
-       }
-
-       .booking-card {
-           background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(74, 222, 128, 0.05));
-           border: 2px solid var(--accent);
-           border-radius: 24px;
-           padding: 2.5rem;
-           position: relative;
-           overflow: hidden;
-       }
-
-       .booking-card::before {
-           content: '';
-           position: absolute;
-           top: -50%;
-           left: -50%;
-           width: 200%;
-           height: 200%;
-           background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-           opacity: 0;
-           transition: opacity 0.3s ease;
-           pointer-events: none;
-       }
-
-       .booking-card:hover::before {
-           opacity: 0.5;
-       }
-
-       .booking-badge {
-           display: inline-block;
-           padding: 0.5rem 1rem;
-           background: var(--accent);
-           color: var(--bg-primary);
-           border-radius: 50px;
-           font-size: 0.8rem;
-           font-weight: 700;
-           text-transform: uppercase;
-           letter-spacing: 0.1em;
-           margin-bottom: 1rem;
-           position: relative;
-           z-index: 1;
-       }
-
-       .booking-card h4 {
-           font-size: 1.5rem;
-           margin-bottom: 0.75rem;
-           position: relative;
-           z-index: 1;
-       }
-
-       .booking-card p {
-           color: var(--text-secondary);
-           margin-bottom: 1.5rem;
-           position: relative;
-           z-index: 1;
-       }
-
-       .booking-card .btn {
-           width: 100%;
-           justify-content: center;
-           position: relative;
-           z-index: 1;
-       }
-
-       /* Footer */
-       footer {
-           background: var(--bg-secondary);
-           border-top: 1px solid var(--border);
-           padding: 4rem 2rem;
-           text-align: center;
-           position: relative;
-       }
-
-       footer::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: 0;
-           right: 0;
-           height: 1px;
-           background: linear-gradient(90deg, transparent, var(--accent), transparent);
-           opacity: 0.3;
-       }
-
-       .footer-content {
-           max-width: 1400px;
-           margin: 0 auto;
-       }
-
-       .footer-logo {
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 2rem;
-           font-weight: 700;
-           margin-bottom: 1rem;
-           color: var(--text-primary);
-       }
-
-       .footer-logo span {
-           color: var(--accent);
-       }
-
-       .footer-text {
-           color: var(--text-muted);
-           font-size: 1rem;
-           margin-bottom: 0.5rem;
-       }
-
-       .footer-credit {
-           color: var(--accent);
-           font-size: 0.9rem;
-       }
-
-       /* Responsive */
-       @media (max-width: 1024px) {
-           .portfolio-grid {
-               grid-template-columns: repeat(2, 1fr);
-           }
-           
-           .portfolio-card:nth-child(1) {
-               grid-column: span 2;
-               grid-row: span 1;
-           }
-           
-           .portfolio-card:nth-child(1) .portfolio-image {
-               min-height: 300px;
-           }
-           
-           .services-grid {
-               grid-template-columns: repeat(2, 1fr);
-           }
-           
-           .why-grid {
-               gap: 2rem;
-           }
-           
-           .contact-wrapper {
-               grid-template-columns: 1fr;
-               gap: 3rem;
-           }
-       }
-
-       @media (max-width: 768px) {
-           body {
-               cursor: auto;
-           }
-           
-           .cursor, .cursor-follower {
-               display: none;
-           }
-           
-           .nav-menu {
-               display: none;
-           }
-           
-           .hero-stats {
-               gap: 2rem;
-               flex-wrap: wrap;
-           }
-           
-           .stat::after {
-               display: none;
-           }
-           
-           .portfolio-grid,
-           .services-grid,
-           .why-grid {
-               grid-template-columns: 1fr;
-           }
-           
-           .portfolio-card:nth-child(1) {
-               grid-column: span 1;
-           }
-           
-           section {
-               padding: 6rem 1.5rem;
-           }
-       }
-
-       /* Loading Screen */
-       .loader {
-           position: fixed;
-           inset: 0;
-           background: var(--bg-primary);
-           z-index: 10000;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           transition: opacity 0.5s ease, visibility 0.5s ease;
-       }
-
-       .loader.hidden {
-           opacity: 0;
-           visibility: hidden;
-       }
-
-       .loader-content {
-           text-align: center;
-       }
-
-       .loader-logo {
-           font-family: 'Space Grotesk', sans-serif;
-           font-size: 3rem;
-           font-weight: 700;
-           color: var(--accent);
-           margin-bottom: 2rem;
-           animation: loaderPulse 1.5s ease-in-out infinite;
-       }
-
-       @keyframes loaderPulse {
-           0%, 100% { opacity: 1; transform: scale(1); }
-           50% { opacity: 0.5; transform: scale(0.95); }
-       }
-
-       .loader-bar {
-           width: 200px;
-           height: 3px;
-           background: var(--border);
-           border-radius: 3px;
-           overflow: hidden;
-           margin: 0 auto;
-       }
-
-       .loader-progress {
-           height: 100%;
-           background: linear-gradient(90deg, var(--accent), var(--accent-light));
-           width: 0%;
-           transition: width 0.3s ease;
-       }
-
-       /* Magnetic Button Effect */
-       .magnetic {
-           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-       }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SweayTech — Digital Craftsmanship</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #111111;
+            --bg-card: #161616;
+            --accent: #22c55e;
+            --accent-hover: #16a34a;
+            --text: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: #27272a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.25rem 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 4rem;
+            background: var(--bg);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .gradient-text {
+            color: var(--accent);
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9375rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.0625rem;
+        }
+
+        /* Portfolio */
+        .portfolio {
+            background: var(--bg-elevated);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .portfolio-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        .portfolio-card.featured {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .portfolio-image {
+            aspect-ratio: 16/10;
+            background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+            position: relative;
+        }
+
+        .portfolio-card.featured .portfolio-image {
+            aspect-ratio: 16/10;
+        }
+
+        .portfolio-content {
+            padding: 1.5rem;
+        }
+
+        .portfolio-content h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .portfolio-content p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            margin-bottom: 1rem;
+        }
+
+        .portfolio-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .portfolio-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .portfolio-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            color: var(--accent);
+        }
+
+        .service-card h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .service-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Why Us */
+        .why-us {
+            background: var(--bg-elevated);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .why-item {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .why-item:hover {
+            border-color: var(--accent);
+        }
+
+        .why-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            opacity: 0.5;
+            line-height: 1;
+        }
+
+        .why-content h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .why-content p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Contact */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-info h3 {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-info > p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .contact-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .contact-method:hover {
+            border-color: var(--accent);
+        }
+
+        .contact-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .contact-details h4 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.125rem;
+        }
+
+        .contact-details span {
+            color: var(--text);
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        .booking-card {
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .booking-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 100px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .booking-card h4 {
+            font-size: 1.125rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .booking-card p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .booking-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-elevated);
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .portfolio-grid,
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .portfolio-card.featured {
+                grid-column: span 2;
+                grid-row: span 1;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .portfolio-grid,
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-card.featured {
+                grid-column: span 1;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-   <!-- Loading Screen -->
-   <div class="loader" id="loader">
-       <div class="loader-content">
-           <div class="loader-logo">SweayTech</div>
-           <div class="loader-bar">
-               <div class="loader-progress" id="loader-progress"></div>
-           </div>
-       </div>
-   </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">Sweay<span>Tech</span></a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#work" class="nav-link">Work</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#why" class="nav-link">Why Us</a></li>
+                <li><a href="#contact" class="nav-cta">Start Project</a></li>
+            </ul>
+        </div>
+    </nav>
 
-   <!-- Custom Cursor -->
-   <div class="cursor" id="cursor"></div>
-   <div class="cursor-follower" id="cursor-follower"></div>
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Available for new projects
+            </div>
+            
+            <h1 class="hero-title">
+                Digital Products That <span class="gradient-text">Convert</span>
+            </h1>
+            
+            <p class="hero-description">
+                We design and develop premium websites that transform visitors into loyal customers. No templates. No shortcuts. Just exceptional craftsmanship.
+            </p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">200+</span>
+                    <span class="stat-label">Sites Delivered</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Client Satisfaction</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">$2M+</span>
+                    <span class="stat-label">Revenue Generated</span>
+                </div>
+            </div>
+            
+            <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary">Start Your Project →</a>
+                <a href="#work" class="btn btn-secondary">View Work</a>
+            </div>
+        </div>
+    </section>
 
-   <!-- Noise Overlay -->
-   <div class="noise"></div>
+    <section id="work" class="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Selected Work</span>
+                <h2 class="section-title">Projects That Perform</h2>
+                <p class="section-subtitle">Premium websites engineered for conversion</p>
+            </div>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-card featured">
+                    <div class="portfolio-image"></div>
+                    <div class="portfolio-content">
+                        <h3>Luxe Fashion</h3>
+                        <p>High-conversion e-commerce platform</p>
+                        <div class="portfolio-meta">
+                            <div class="portfolio-stats">
+                                <span>340% conversion</span>
+                                <span>180K visitors</span>
+                            </div>
+                            <div class="portfolio-price">$8,500</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-card">
+                    <div class="portfolio-image"></div>
+                    <div class="portfolio-content">
+                        <h3>Scale SaaS</h3>
+                        <p>B2B landing page system</p>
+                        <div class="portfolio-meta">
+                            <div class="portfolio-stats">
+                                <span>45% demo rate</span>
+                            </div>
+                            <div class="portfolio-price">$12,000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-card">
+                    <div class="portfolio-image"></div>
+                    <div class="portfolio-content">
+                        <h3>Vertex Creative</h3>
+                        <p>Interactive agency portfolio</p>
+                        <div class="portfolio-meta">
+                            <div class="portfolio-stats">
+                                <span>500+ leads</span>
+                            </div>
+                            <div class="portfolio-price">$15,000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-card">
+                    <div class="portfolio-image"></div>
+                    <div class="portfolio-content">
+                        <h3>FinTech Pro</h3>
+                        <p>Secure analytics dashboard</p>
+                        <div class="portfolio-meta">
+                            <div class="portfolio-stats">
+                                <span>10K+ users</span>
+                            </div>
+                            <div class="portfolio-price">$18,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-   <!-- Navigation -->
-   <nav class="navbar" id="navbar">
-       <div class="nav-container">
-           <a href="#home" class="nav-logo">Sweay<span>Tech</span></a>
-           <ul class="nav-menu">
-               <li><a href="#home" class="nav-link magnetic">Home</a></li>
-               <li><a href="#work" class="nav-link magnetic">Work</a></li>
-               <li><a href="#services" class="nav-link magnetic">Services</a></li>
-               <li><a href="#why" class="nav-link magnetic">Why Us</a></li>
-               <li><a href="#contact" class="nav-cta magnetic">Start Project</a></li>
-           </ul>
-       </div>
-   </nav>
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Capabilities</span>
+                <h2 class="section-title">What We Do</h2>
+                <p class="section-subtitle">End-to-end solutions for growth</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">◆</div>
+                    <h3>Web Design</h3>
+                    <p>Bespoke interfaces balancing aesthetics with conversion psychology.</p>
+                    <div class="service-price">From $4,000</div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">◇</div>
+                    <h3>Development</h3>
+                    <p>Lightning-fast, accessible builds with Next.js or Webflow.</p>
+                    <div class="service-price">From $6,000</div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">○</div>
+                    <h3>E-Commerce</h3>
+                    <p>Shopify Plus solutions that turn browsers into buyers.</p>
+                    <div class="service-price">From $8,000</div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">□</div>
+                    <h3>Landing Pages</h3>
+                    <p>High-converting pages for specific acquisition channels.</p>
+                    <div class="service-price">From $2,500</div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">△</div>
+                    <h3>Redesign</h3>
+                    <p>Modernize existing sites with improved UX and fresh identity.</p>
+                    <div class="service-price">From $5,000</div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">☆</div>
+                    <h3>Strategy</h3>
+                    <p>Define your digital voice and market positioning.</p>
+                    <div class="service-price">Custom</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-   <!-- Hero Section -->
-   <section id="home" class="hero">
-       <canvas id="hero-canvas"></canvas>
-       
-       <div class="hero-content">
-           <div class="hero-badge">
-               <span class="badge-dot"></span>
-               Available for new projects
-           </div>
-           
-           <h1 class="hero-title">
-               <span class="line"><span class="line-inner">Digital Products</span></span>
-               <span class="line"><span class="line-inner gradient-text">That Convert</span></span>
-           </h1>
-           
-           <p class="hero-description">
-               We design and develop premium websites that transform visitors into loyal customers. 
-               No templates. No shortcuts. Just exceptional digital craftsmanship.
-           </p>
-           
-           <div class="hero-stats">
-               <div class="stat">
-                   <span class="stat-number" data-count="200">0</span>
-                   <span class="stat-label">Sites Delivered</span>
-               </div>
-               <div class="stat">
-                   <span class="stat-number" data-count="98">0</span>
-                   <span class="stat-label">Satisfaction %</span>
-               </div>
-               <div class="stat">
-                   <span class="stat-number" data-count="2">0</span>
-                   <span class="stat-label">Million Revenue</span>
-               </div>
-           </div>
-           
-           <div class="hero-buttons">
-               <a href="#contact" class="btn btn-primary magnetic">
-                   <span>Start Your Project</span>
-                   <span class="btn-arrow">→</span>
-               </a>
-               <a href="#work" class="btn btn-secondary magnetic">
-                   <span>View Portfolio</span>
-               </a>
-           </div>
-       </div>
-   </section>
+    <section id="why" class="why-us">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Why Us</span>
+                <h2 class="section-title">The Difference</h2>
+            </div>
+            
+            <div class="why-grid">
+                <div class="why-item">
+                    <div class="why-number">01</div>
+                    <div class="why-content">
+                        <h3>Conversion First</h3>
+                        <p>We design for metrics that matter. Every decision backed by data.</p>
+                    </div>
+                </div>
+                
+                <div class="why-item">
+                    <div class="why-number">02</div>
+                    <div class="why-content">
+                        <h3>Technical Excellence</h3>
+                        <p>95+ Core Web Vitals scores. Clean code. Optimized assets.</p>
+                    </div>
+                </div>
+                
+                <div class="why-item">
+                    <div class="why-number">03</div>
+                    <div class="why-content">
+                        <h3>True Partnership</h3>
+                        <p>From discovery through post-launch. We're your dedicated team.</p>
+                    </div>
+                </div>
+                
+                <div class="why-item">
+                    <div class="why-number">04</div>
+                    <div class="why-content">
+                        <h3>Transparent Process</h3>
+                        <p>Weekly updates. Clear timelines. No hidden fees.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-   <!-- Portfolio Section -->
-   <section id="work" class="portfolio">
-       <div class="container">
-           <div class="section-header">
-               <span class="section-label">Selected Work</span>
-               <h2 class="section-title">Projects That Perform</h2>
-               <p class="section-subtitle">Premium websites engineered for conversion and growth</p>
-           </div>
-           
-           <div class="portfolio-grid">
-               <div class="portfolio-card" data-tilt>
-                   <div class="portfolio-image" style="background: linear-gradient(135deg, #0a1f0a 0%, #1a3a1a 50%, #0f2f0f 100%);">
-                       <div style="position: absolute; inset: 0; background: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%2322c55e\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); opacity: 0.5;"></div>
-                   </div>
-                   <div class="portfolio-content">
-                       <h3>Luxe Fashion</h3>
-                       <p>High-conversion e-commerce platform with immersive product experiences</p>
-                       <div class="portfolio-meta">
-                           <div class="portfolio-stats">
-                               <span>340% conversion</span>
-                               <span>180K monthly visitors</span>
-                           </div>
-                           <div class="portfolio-price">$8,500</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="portfolio-card" data-tilt>
-                   <div class="portfolio-image" style="background: linear-gradient(135deg, #0f1f0f 0%, #1f3f1f 100%);"></div>
-                   <div class="portfolio-content">
-                       <h3>Scale SaaS</h3>
-                       <p>B2B landing page system driving qualified enterprise leads</p>
-                       <div class="portfolio-meta">
-                           <div class="portfolio-stats">
-                               <span>45% demo rate</span>
-                               <span>$2.3M pipeline</span>
-                           </div>
-                           <div class="portfolio-price">$12,000</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="portfolio-card" data-tilt>
-                   <div class="portfolio-image" style="background: linear-gradient(135deg, #0a1a0a 0%, #152e15 100%);"></div>
-                   <div class="portfolio-content">
-                       <h3>Vertex Creative</h3>
-                       <p>Interactive agency portfolio with WebGL experiences</p>
-                       <div class="portfolio-meta">
-                           <div class="portfolio-stats">
-                               <span>500+ leads</span>
-                               <span>Awwwards recognition</span>
-                           </div>
-                           <div class="portfolio-price">$15,000</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="portfolio-card" data-tilt>
-                   <div class="portfolio-image" style="background: linear-gradient(135deg, #0f1a0f 0%, #1f2e1f 100%);"></div>
-                   <div class="portfolio-content">
-                       <h3>FinTech Pro</h3>
-                       <p>Secure dashboard for financial data visualization</p>
-                       <div class="portfolio-meta">
-                           <div class="portfolio-stats">
-                               <span>99.9% uptime</span>
-                               <span>10K+ active users</span>
-                           </div>
-                           <div class="portfolio-price">$18,000</div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-       </div>
-   </section>
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Get Started</span>
+                <h2 class="section-title">Let's Talk</h2>
+            </div>
+            
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3>Start the conversation</h3>
+                    <p>Book a free 30-minute discovery call to discuss your project.</p>
+                    
+                    <div class="contact-methods">
+                        <a href="mailto:sweaytech@gmail.com" class="contact-method">
+                            <div class="contact-icon">✉</div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <span>sweaytech@gmail.com</span>
+                            </div>
+                        </a>
+                        
+                        <a href="tel:+14147121555" class="contact-method">
+                            <div class="contact-icon">☎</div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <span>(414) 712-1555</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
 
-   <!-- Services Section -->
-   <section id="services" class="services">
-       <div class="container">
-           <div class="section-header">
-               <span class="section-label">Capabilities</span>
-               <h2 class="section-title">End-to-End Solutions</h2>
-               <p class="section-subtitle">From strategy to launch, we handle every detail</p>
-           </div>
-           
-           <div class="services-grid">
-               <div class="service-card" data-tilt>
-                   <div class="service-icon">✦</div>
-                   <h3>Web Design</h3>
-                   <p>Bespoke interfaces that balance aesthetic excellence with conversion psychology. Every pixel intentional.</p>
-                   <div class="service-price">From $4,000</div>
-               </div>
-               
-               <div class="service-card" data-tilt>
-                   <div class="service-icon">⚡</div>
-                   <h3>Development</h3>
-                   <p>Lightning-fast, accessible, and scalable. Built with Next.js, React, or Webflow depending on your needs.</p>
-                   <div class="service-price">From $6,000</div>
-               </div>
-               
-               <div class="service-card" data-tilt>
-                   <div class="service-icon">◎</div>
-                   <h3>E-Commerce</h3>
-                   <p>Shopify Plus and custom solutions that turn browsers into buyers with optimized checkout flows.</p>
-                   <div class="service-price">From $8,000</div>
-               </div>
-               
-               <div class="service-card" data-tilt>
-                   <div class="service-icon">◉</div>
-                   <h3>Landing Pages</h3>
-                   <p>High-converting campaign pages designed for specific acquisition channels and user intents.</p>
-                   <div class="service-price">From $2,500</div>
-               </div>
-               
-               <div class="service-card" data-tilt>
-                   <div class="service-icon">↻</div>
-                   <h3>Redesign</h3>
-                   <p>Transform your existing site with modern architecture, improved UX, and fresh visual identity.</p>
-                   <div class="service-price">From $5,000</div>
-               </div>
-               
-               <div class="service-card" data-tilt>
-                   <div class="service-icon">◈</div>
-                   <h3>Brand Strategy</h3>
-                   <p>Define your digital voice, visual language, and market positioning for maximum impact.</p>
-                   <div class="service-price">Custom</div>
-               </div>
-           </div>
-       </div>
-   </section>
+                <div class="booking-card">
+                    <span class="booking-badge">Free Consultation</span>
+                    <h4>Schedule Your Call</h4>
+                    <p>30 minutes to discuss scope, timeline, and investment.</p>
+                    <a href="https://sweaytech.youcanbook.me" target="_blank" class="btn btn-primary">Book Now →</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-   <!-- Why Us Section -->
-   <section id="why" class="why-us">
-       <div class="container">
-           <div class="section-header">
-               <span class="section-label">The Difference</span>
-               <h2 class="section-title">Why SweayTech</h2>
-           </div>
-           
-           <div class="why-grid">
-               <div class="why-item">
-                   <div class="why-number">01</div>
-                   <div class="why-content">
-                       <h3>Conversion First</h3>
-                       <p>Beautiful means nothing without results. We design for metrics that matter—signups, sales, and retention. Every decision is backed by data and user psychology.</p>
-                   </div>
-               </div>
-               
-               <div class="why-item">
-                   <div class="why-number">02</div>
-                   <div class="why-content">
-                       <h3>Technical Excellence</h3>
-                       <p>Clean code, semantic HTML, and optimized assets. Our sites score 95+ on Core Web Vitals and rank higher because of it.</p>
-                   </div>
-               </div>
-               
-               <div class="why-item">
-                   <div class="why-number">03</div>
-                   <div class="why-content">
-                       <h3>True Partnership</h3>
-                       <p>We don't do handoffs and disappear. From discovery through post-launch optimization, we're your dedicated digital team.</p>
-                   </div>
-               </div>
-               
-               <div class="why-item">
-                   <div class="why-number">04</div>
-                   <div class="why-content">
-                       <h3>Transparent Process</h3>
-                       <p>Weekly updates, clear timelines, and no hidden fees. You'll always know exactly where your project stands.</p>
-                   </div>
-               </div>
-           </div>
-       </div>
-   </section>
+    <footer>
+        <div class="footer-logo">Sweay<span>Tech</span></div>
+        <p class="footer-text">© 2026 SweayTech. Crafted by Nas & Yash.</p>
+    </footer>
 
-   <!-- Contact Section -->
-   <section id="contact" class="contact">
-       <div class="container">
-           <div class="section-header">
-               <span class="section-label">Get Started</span>
-               <h2 class="section-title">Let's Build Something Great</h2>
-               <p class="section-subtitle">Tell us about your project or book a call directly</p>
-           </div>
-           
-           <div class="contact-wrapper">
-               <div class="contact-info">
-                   <h3>Start the Conversation</h3>
-                   <p>Prefer to talk strategy first? Book a free 30-minute discovery call to discuss your goals, timeline, and investment.</p>
-                   
-                   <div class="contact-methods">
-                       <a href="mailto:sweaytech@gmail.com" class="contact-method magnetic">
-                           <div class="contact-icon">✉</div>
-                           <div class="contact-details">
-                               <h4>Email</h4>
-                               <span>sweaytech@gmail.com</span>
-                           </div>
-                       </a>
-                       
-                       <a href="tel:+14147121555" class="contact-method magnetic">
-                           <div class="contact-icon">☎</div>
-                           <div class="contact-details">
-                               <h4>Phone</h4>
-                               <span>(414) 712-1555</span>
-                           </div>
-                       </a>
-                       
-                       <div class="contact-method">
-                           <div class="contact-icon">◷</div>
-                           <div class="contact-details">
-                               <h4>Response Time</h4>
-                               <span>Within 4 hours</span>
-                           </div>
-                       </div>
-                   </div>
+    <script>
+        // Simple scroll animations
+        gsap.registerPlugin(ScrollTrigger);
 
-                   <div class="booking-card">
-                       <span class="booking-badge">Free Consultation</span>
-                       <h4>Book Your Strategy Call</h4>
-                       <p>30 minutes to discuss your project scope, timeline, and investment.</p>
-                       <a href="https://sweaytech.youcanbook.me" target="_blank" class="btn btn-primary magnetic">
-                           <span>Schedule Now</span>
-                           <span class="btn-arrow">→</span>
-                       </a>
-                   </div>
-               </div>
-           </div>
-       </div>
-   </section>
+        // Fade in elements on scroll
+        gsap.utils.toArray('.portfolio-card, .service-card, .why-item').forEach((el, i) => {
+            gsap.from(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                },
+                y: 20,
+                opacity: 0,
+                duration: 0.4,
+                delay: i * 0.05
+            });
+        });
 
-   <!-- Footer -->
-   <footer>
-       <div class="footer-content">
-           <div class="footer-logo">Sweay<span>Tech</span></div>
-           <p class="footer-text">© 2026 SweayTech. All rights reserved.</p>
-           <p class="footer-credit">Crafted with precision by Nas & Yash</p>
-       </div>
-   </footer>
-
-   <script>
-       // Register GSAP plugins
-       gsap.registerPlugin(ScrollTrigger);
-
-       // Loading Screen
-       window.addEventListener('load', () => {
-           const loader = document.getElementById('loader');
-           const progress = document.getElementById('loader-progress');
-           
-           let width = 0;
-           const interval = setInterval(() => {
-               width += Math.random() * 30;
-               if (width > 100) width = 100;
-               progress.style.width = width + '%';
-               
-               if (width === 100) {
-                   clearInterval(interval);
-                   setTimeout(() => {
-                       loader.classList.add('hidden');
-                       initAnimations();
-                   }, 500);
-               }
-           }, 200);
-       });
-
-       // Custom Cursor
-       const cursor = document.getElementById('cursor');
-       const cursorFollower = document.getElementById('cursor-follower');
-       let mouseX = 0, mouseY = 0;
-       let cursorX = 0, cursorY = 0;
-       let followerX = 0, followerY = 0;
-
-       document.addEventListener('mousemove', (e) => {
-           mouseX = e.clientX;
-           mouseY = e.clientY;
-       });
-
-       function animateCursor() {
-           cursorX += (mouseX - cursorX) * 0.2;
-           cursorY += (mouseY - cursorY) * 0.2;
-           followerX += (mouseX - followerX) * 0.1;
-           followerY += (mouseY - followerY) * 0.1;
-
-           cursor.style.left = cursorX - 10 + 'px';
-           cursor.style.top = cursorY - 10 + 'px';
-           cursorFollower.style.left = followerX - 20 + 'px';
-           cursorFollower.style.top = followerY - 20 + 'px';
-
-           requestAnimationFrame(animateCursor);
-       }
-       animateCursor();
-
-       // Cursor hover effects
-       const interactiveElements = document.querySelectorAll('a, button, .portfolio-card, .service-card, .why-item, .contact-method');
-       interactiveElements.forEach(el => {
-           el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-           el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-       });
-
-       // Magnetic effect
-       const magneticElements = document.querySelectorAll('.magnetic');
-       magneticElements.forEach(el => {
-           el.addEventListener('mousemove', (e) => {
-               const rect = el.getBoundingClientRect();
-               const x = e.clientX - rect.left - rect.width / 2;
-               const y = e.clientY - rect.top - rect.height / 2;
-               el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-           });
-           
-           el.addEventListener('mouseleave', () => {
-               el.style.transform = 'translate(0, 0)';
-           });
-       });
-
-       // WebGL Hero Background
-       function initHeroCanvas() {
-           const canvas = document.getElementById('hero-canvas');
-           const scene = new THREE.Scene();
-           const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-           const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-           
-           renderer.setSize(window.innerWidth, window.innerHeight);
-           renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-           // Create particles
-           const particlesGeometry = new THREE.BufferGeometry();
-           const particlesCount = 1500;
-           const posArray = new Float32Array(particlesCount * 3);
-           const scaleArray = new Float32Array(particlesCount);
-
-           for (let i = 0; i < particlesCount; i++) {
-               posArray[i * 3] = (Math.random() - 0.5) * 10;
-               posArray[i * 3 + 1] = (Math.random() - 0.5) * 10;
-               posArray[i * 3 + 2] = (Math.random() - 0.5) * 10;
-               scaleArray[i] = Math.random();
-           }
-
-           particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-           particlesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scaleArray, 1));
-
-           const particlesMaterial = new THREE.PointsMaterial({
-               size: 0.02,
-               color: 0x22c55e,
-               transparent: true,
-               opacity: 0.6,
-               blending: THREE.AdditiveBlending
-           });
-
-           const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-           scene.add(particlesMesh);
-
-           camera.position.z = 3;
-
-           let mouseX = 0;
-           let mouseY = 0;
-
-           document.addEventListener('mousemove', (event) => {
-               mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-               mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-           });
-
-           function animate() {
-               requestAnimationFrame(animate);
-
-               particlesMesh.rotation.x += 0.0005;
-               particlesMesh.rotation.y += 0.0005;
-
-               particlesMesh.rotation.x += mouseY * 0.0005;
-               particlesMesh.rotation.y += mouseX * 0.0005;
-
-               renderer.render(scene, camera);
-           }
-           animate();
-
-           window.addEventListener('resize', () => {
-               camera.aspect = window.innerWidth / window.innerHeight;
-               camera.updateProjectionMatrix();
-               renderer.setSize(window.innerWidth, window.innerHeight);
-           });
-       }
-
-       // Initialize animations
-       function initAnimations() {
-           initHeroCanvas();
-
-           // Hero animations
-           const tl = gsap.timeline();
-           
-           tl.to('.hero-badge', {
-               opacity: 1,
-               y: 0,
-               duration: 0.8,
-               ease: 'power3.out'
-           })
-           .to('.hero-title .line-inner', {
-               y: 0,
-               duration: 1,
-               stagger: 0.2,
-               ease: 'power4.out'
-           }, '-=0.4')
-           .to('.hero-title', {
-               opacity: 1,
-               rotateX: 0,
-               duration: 0.8,
-               ease: 'power3.out'
-           }, '-=1')
-           .to('.hero-description', {
-               opacity: 1,
-               y: 0,
-               duration: 0.8,
-               ease: 'power3.out'
-           }, '-=0.6')
-           .to('.hero-stats', {
-               opacity: 1,
-               y: 0,
-               duration: 0.8,
-               ease: 'power3.out'
-           }, '-=0.6')
-           .to('.hero-buttons', {
-               opacity: 1,
-               y: 0,
-               duration: 0.8,
-               ease: 'power3.out'
-           }, '-=0.6');
-
-           // Counter animation
-           const counters = document.querySelectorAll('.stat-number');
-           counters.forEach(counter => {
-               const target = parseInt(counter.getAttribute('data-count'));
-               const suffix = counter.parentElement.querySelector('.stat-label').textContent.includes('%') ? '%' : 
-                              counter.parentElement.querySelector('.stat-label').textContent.includes('M') ? 'M+' : '+';
-               
-               gsap.to(counter, {
-                   innerHTML: target,
-                   duration: 2,
-                   ease: 'power2.out',
-                   snap: { innerHTML: 1 },
-                   scrollTrigger: {
-                       trigger: counter,
-                       start: 'top 80%',
-                       once: true
-                   },
-                   onUpdate: function() {
-                       counter.innerHTML = Math.ceil(this.targets()[0].innerHTML) + suffix;
-                   }
-               });
-           });
-
-           // Scroll animations
-           gsap.utils.toArray('.section-header').forEach(header => {
-               gsap.from(header, {
-                   scrollTrigger: {
-                       trigger: header,
-                       start: 'top 80%',
-                       toggleActions: 'play none none reverse'
-                   },
-                   y: 50,
-                   opacity: 0,
-                   duration: 1,
-                   ease: 'power3.out'
-               });
-           });
-
-           gsap.utils.toArray('.portfolio-card').forEach((card, i) => {
-               gsap.from(card, {
-                   scrollTrigger: {
-                       trigger: card,
-                       start: 'top 85%',
-                       toggleActions: 'play none none reverse'
-                   },
-                   y: 80,
-                   opacity: 0,
-                   duration: 0.8,
-                   delay: i * 0.1,
-                   ease: 'power3.out'
-               });
-           });
-
-           gsap.utils.toArray('.service-card').forEach((card, i) => {
-               gsap.from(card, {
-                   scrollTrigger: {
-                       trigger: card,
-                       start: 'top 85%',
-                       toggleActions: 'play none none reverse'
-                   },
-                   y: 60,
-                   opacity: 0,
-                   duration: 0.6,
-                   delay: i * 0.1,
-                   ease: 'power3.out'
-               });
-           });
-
-           gsap.utils.toArray('.why-item').forEach((item, i) => {
-               gsap.from(item, {
-                   scrollTrigger: {
-                       trigger: item,
-                       start: 'top 85%',
-                       toggleActions: 'play none none reverse'
-                   },
-                   x: i % 2 === 0 ? -50 : 50,
-                   opacity: 0,
-                   duration: 0.8,
-                   ease: 'power3.out'
-               });
-           });
-
-           gsap.from('.contact-info', {
-               scrollTrigger: {
-                   trigger: '.contact-info',
-                   start: 'top 80%',
-                   toggleActions: 'play none none reverse'
-               },
-               x: -50,
-               opacity: 0,
-               duration: 1,
-               ease: 'power3.out'
-           });
-
-           // 3D Tilt effect for cards
-           const tiltCards = document.querySelectorAll('[data-tilt]');
-           tiltCards.forEach(card => {
-               card.addEventListener('mousemove', (e) => {
-                   const rect = card.getBoundingClientRect();
-                   const x = e.clientX - rect.left;
-                   const y = e.clientY - rect.top;
-                   
-                   const centerX = rect.width / 2;
-                   const centerY = rect.height / 2;
-                   
-                   const rotateX = (y - centerY) / 10;
-                   const rotateY = (centerX - x) / 10;
-                   
-                   card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-               });
-               
-               card.addEventListener('mouseleave', () => {
-                   card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-               });
-           });
-       }
-
-       // Navbar scroll effect
-       window.addEventListener('scroll', () => {
-           const navbar = document.getElementById('navbar');
-           if (window.scrollY > 50) {
-               navbar.classList.add('scrolled');
-           } else {
-               navbar.classList.remove('scrolled');
-           }
-       });
-
-       // Smooth scroll for anchor links
-       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-           anchor.addEventListener('click', function (e) {
-               e.preventDefault();
-               const target = document.querySelector(this.getAttribute('href'));
-               if (target) {
-                   target.scrollIntoView({
-                       behavior: 'smooth',
-                       block: 'start'
-                   });
-               }
-           });
-       });
-
-       // Parallax effect for hero
-       window.addEventListener('scroll', () => {
-           const scrolled = window.pageYOffset;
-           const heroContent = document.querySelector('.hero-content');
-           if (heroContent && scrolled < window.innerHeight) {
-               heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
-           }
-       });
-   </script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 10, 0.8)';
+            }
+        });
+    </script>
 </body>
 </html>
